@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RunGroopWebApp.Data;
+using RunGroopWebApp.Interfaces;
 using RunGroopWebApp.Models;
 
 namespace RunGroopWebApp.Controllers;
@@ -8,22 +9,24 @@ namespace RunGroopWebApp.Controllers;
 public class ClubController : Controller
 {
     private readonly ApplicationDbContext _context;
+    private readonly IClubRepository _clubRepository;
 
-    public ClubController(ApplicationDbContext context) 
+    public ClubController(ApplicationDbContext context, IClubRepository clubRepository) 
     {
         _context = context;
+        _clubRepository = clubRepository;
     }
     // GET
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
+        IEnumerable<Club> club = await _clubRepository.GetAll();
         
-        var clubs = _context.Clubs.ToList();
-        return View(clubs);
+        return View(club);
     }
 
-    public IActionResult Detail(int id)
+    public async Task<IActionResult> Detail(int id)
     {
-        Club club = _context.Clubs.Include(a => a.Address).FirstOrDefault(x  => x.Id == id);
+        Club club = await _clubRepository.GetByIdAsync(id);
         return View(club);
     }
 }
