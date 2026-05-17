@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using RunGroopWebApp.Data;
 using RunGroopWebApp.Models;
 
@@ -18,5 +19,11 @@ public class RaceController : Controller
         List<Race> Races = _context.Races.ToList();
         
         return View(Races);
+    }
+
+    public IActionResult Detail(int? id)
+    {
+        Race race = _context.Races.Include(x => x.Address).FirstOrDefault(x => x.Id == id);
+        return View(race);
     }
 }
