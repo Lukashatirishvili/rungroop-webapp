@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RunGroopWebApp.Data;
+using RunGroopWebApp.Data.Enum;
 using RunGroopWebApp.Interfaces;
 using RunGroopWebApp.Models;
 using RunGroopWebApp.ViewModels;
@@ -66,4 +67,73 @@ public class RaceController : Controller
         
         return View(raceVM);
     }
+
+    public async Task<IActionResult> Edit(int id)
+    {
+        var race = await _raceRepository.GetByIdAsync(id);
+
+        if (race == null)
+        {
+            return NotFound();
+        }
+
+        var raceMV = new EditRaceViewModel
+        {
+            Id = id,
+            Title = race.Title,
+            Description = race.Description,
+            URL = race.Image,
+            AddressId = race.AddressId,
+            Address = race.Address,
+            RaceCategory = race.RaceCategory
+        };
+        return View(raceMV);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Edit(int id, EditRaceViewModel raceVM)
+    {
+        if (!ModelState.IsValid)
+        {
+            ModelState.AddModelError("", "Could not edit race");
+            return View(raceVM);
+        }
+
+        var userRace = await _raceRepository.GetByIdAsyncNoTracking(id);
+
+        if (userRace != null)
+        {
+            try
+            {
+                await _photoService.DeletePhotoAsync(userRace.Image);
+            }
+
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", "Could not delete image");
+                return View(raceVM);
+            }
+            
+            var photoResult = await _photoService.AddPhotoAsync(raceVM.Image);
+
+            var race = new Race
+            {
+                Id = id,
+                Title = raceVM.Title,
+                Description = raceVM.Description,
+                Image = photoResult.Url.ToString(),
+                AddressId = raceVM.AddressId,
+                Address = raceVM.Address,
+                RaceCategory = raceVM.RaceCategory
+            };
+            _raceRepository.Update(race);
+            return RedirectToAction("Index");
+        }
+        else
+        {
+            return View(raceVM);
+        }
+    }
+    
+    
 }

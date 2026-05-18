@@ -16,4 +16,13 @@
       </PackageReference>
     </ItemGroup>
 
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="RunGroop.Application\obj\project.assets.json" />
+      <_ContentIncludedByDefault Remove="RunGroop.Application\obj\project.packagespec.json" />
+      <_ContentIncludedByDefault Remove="RunGroop.Application\obj\RunGroop.Application.csproj.nuget.dgspec.json" />
+      <_ContentIncludedByDefault Remove="RunGroop.Infrastructure\obj\project.assets.json" />
+      <_ContentIncludedByDefault Remove="RunGroop.Infrastructure\obj\project.packagespec.json" />
+      <_ContentIncludedByDefault Remove="RunGroop.Infrastructure\obj\RunGroop.Infrastructure.csproj.nuget.dgspec.json" />
+    </ItemGroup>
+
 </Project>
