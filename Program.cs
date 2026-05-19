@@ -1,7 +1,10 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using RunGroopWebApp.Data;
 using RunGroopWebApp.Helpers;
 using RunGroopWebApp.Interfaces;
+using RunGroopWebApp.Models;
 using RunGroopWebApp.Repository;
 using RunGroopWebApp.Services;
 
@@ -14,10 +17,18 @@ builder.Services.AddScoped<IRaceRepository, RaceRepository>();
 builder.Services.AddScoped<IClubRepository, ClubRepository>();
 builder.Services.AddScoped<IPhotoService, PhotoService>();
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
+builder.Services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddMemoryCache();
+builder.Services.AddSession();
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
 
 var app = builder.Build();
 
-Seed.SeedData(app);
+if (args.Length == 1 && args[0].ToLower() == "seedata")
+{
+    await Seed.SeedUsersAndRolesAsync(app);    
+}
+
 
 
 // Configure the HTTP request pipeline.
