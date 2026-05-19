@@ -135,5 +135,32 @@ public class RaceController : Controller
         }
     }
     
+    public async Task<IActionResult> Delete(int id)
+    {
+        var raceDetails = await _raceRepository.GetByIdAsync(id);
+
+        if (raceDetails == null)
+        {
+            return View("Error");
+        }
+        
+        return View(raceDetails);
+    }
+    
+    
+    [HttpPost,  ActionName("Delete")]
+
+    public async Task<IActionResult> DeleteClub(int id)
+    {
+        var item = await _raceRepository.GetByIdAsync(id);
+
+        if (item == null)
+        {
+            return View("Error");
+        }
+        
+        _raceRepository.Delete(item);
+        return RedirectToAction("Index");
+    }
     
 }

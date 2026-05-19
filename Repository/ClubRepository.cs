@@ -47,7 +47,7 @@ public class ClubRepository : IClubRepository
 
     public bool Delete(Club club)
     {
-        _context.Clubs.Update(club);
+        _context.Clubs.Remove(club);
         return Save();      }
 
     public bool Save()
