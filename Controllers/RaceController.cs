@@ -10,15 +10,15 @@ namespace RunGroopWebApp.Controllers;
 
 public class RaceController : Controller
 {
-    private readonly ApplicationDbContext _context;
     private readonly IRaceRepository _raceRepository;
     private readonly IPhotoService _photoService;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public RaceController(ApplicationDbContext context, IRaceRepository raceRepository, IPhotoService photoService)
+    public RaceController(IRaceRepository raceRepository, IPhotoService photoService, IHttpContextAccessor httpContextAccessor)
     {
-        _context = context;
         _raceRepository = raceRepository;
         _photoService = photoService;
+        _httpContextAccessor = httpContextAccessor;
     }
     // GET
     public async Task<IActionResult> Index()
@@ -35,7 +35,14 @@ public class RaceController : Controller
 
     public IActionResult Create()
     {
-        return View();
+        var currentUser = _httpContextAccessor.HttpContext.User.GetUserId();
+
+        var createRaceViewModel = new CreateRaceViewModel
+        {
+            AppUserId = currentUser,
+        };
+        
+        return View(createRaceViewModel);
     }
 
     [HttpPost]
@@ -49,6 +56,7 @@ public class RaceController : Controller
                 Title = raceVM.Title,
                 Description = raceVM.Description,
                 Image = result.Url.ToString(),
+                AppUserId = raceVM.AppUserId,
                 Address = new Address
                 {
                     Street = raceVM.Address.Street,

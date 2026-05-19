@@ -2,6 +2,7 @@
 @model RunGroopWebApp.ViewModels.CreateClubViewModel
 
 <form method="post" asp-action="Create" enctype="multipart/form-data">
+    <input type="hidden" id="AppUserId" name="AppUserId" asp-for="AppUserId"/>
     <div class="form-group">
         <label asp-for="Title">Title</label>
         <input asp-for="Title" class="form-control" placeholder="Enter Title">
@@ -14,7 +15,7 @@
     </div>
     <div class="form-group">
         <label asp-for="ClubCategory">ClubCategory</label>
-        <select asp-for="ClubCategory" asp-items="@Html.GetEnumSelectList<ClubCategory>()" class="form-select" >
+        <select asp-for="ClubCategory" asp-items="@Html.GetEnumSelectList<ClubCategory>()" class="form-select">
             <option>Select</option>
         </select>
         <span asp-validation-for="ClubCategory" class="text-danger"></span>
