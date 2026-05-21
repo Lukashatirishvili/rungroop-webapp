@@ -6,10 +6,14 @@ namespace RunGroopWebApp.Controllers;
 
 public class UserController : Controller
 {
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IPhotoService _photoService;
     private readonly IUserRepository _userRepository;
 
-    public UserController(IUserRepository userRepository)
+    public UserController(IHttpContextAccessor httpContextAccessor, IPhotoService photoService, IUserRepository userRepository)
     {
+        _httpContextAccessor = httpContextAccessor;
+        _photoService = photoService;
         _userRepository = userRepository;
     }
 
@@ -27,7 +31,8 @@ public class UserController : Controller
                 Id = user.Id,
                 UserName = user.UserName,
                 Pace = user.Pace,
-                Mileage = user.Mileage
+                Mileage = user.Mileage,
+                ProfileImageUrl = user.ProfileImageUrl
             };
             result.Add(userViewModel);
         }
